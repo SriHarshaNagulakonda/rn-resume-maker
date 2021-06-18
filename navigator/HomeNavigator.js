@@ -8,10 +8,12 @@ import { createDrawerNavigator } from 'react-navigation-drawer';
 import { Platform, SafeAreaView, Button, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import LoginScreen from '../screen/user/Login'
+import SignUpScreen from '../screen/user/SignUp'
 
 const LoginNavigator = createStackNavigator(
     {
-      Login: LoginScreen
+      Login: LoginScreen,
+      SignUp: SignUpScreen,
     },
 );
 
@@ -20,4 +22,4 @@ const MainNavigator = createSwitchNavigator({
     Login: LoginNavigator,
   });
 
-  export default createAppContainer(MainNavigator);
+export default createAppContainer(MainNavigator);
