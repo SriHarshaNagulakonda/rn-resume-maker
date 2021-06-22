@@ -1,15 +1,21 @@
-import React, {useState} from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native'
+import React, {useState, useEffect} from 'react'
+import { StyleSheet, Text, View, TouchableOpacity,ActivityIndicator, ScrollView } from 'react-native'
 import { TextInput } from 'react-native-paper'
 import { FontAwesome } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
+import { useSelector, useDispatch } from 'react-redux';
+import * as authAction from '../../store/actions/auth'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = (props) => {
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [eyeIcon, setEyeIcon] = useState("eye-with-line")
     const [passwordVisibility, setPasswordVisibility] = useState(true);
+    const [error, setError] = useState("")
+    const [loading, setLoading] = useState(false);
 
     const emailChangeHandler = (email) => {
         setEmail(email);
@@ -24,8 +30,44 @@ const Login = (props) => {
       setPasswordVisibility(!passwordVisibility);
     }
 
-    
-    
+    const dispatch = useDispatch();
+    const loginHandler = async () => {
+      setError("");
+      setLoading(true);
+      try{
+          const login = await dispatch(authAction.login(
+              email, password
+          ))
+          setTimeout(() => props.navigation.navigate('Home'),2000);
+          setEmail("");
+          setPassword("");
+          setError("Success")
+      }
+      catch(err){
+          // console.log(err);
+          setError(err.message);
+      }
+      setLoading(false);
+  }
+
+  const user = useSelector(state => state.user);
+  if(user && user.userId){
+    props.navigation.navigate('Home');
+  }
+
+  useEffect(() => {
+    AsyncStorage.getItem('userData')
+  .then((data) => {
+    // console.log(data);
+    if(data){
+      data = JSON.parse(data)
+      // console.log(data.userId,'user id');
+      dispatch(authAction.authenticate(data.userId))
+      props.navigation.navigate('Home');
+    }
+  })
+  },[dispatch]);
+
     return (
         <View style={styles.cantainer}>
         <Text style={styles.headerTxt}>WELCOME</Text>
@@ -43,8 +85,9 @@ const Login = (props) => {
             left={<TextInput.Icon style={styles.inputIcon} name={() =><Ionicons name="md-lock-closed" size={28} color="black" /> }  />}
             right={<TextInput.Icon style={styles.inputIcon} onPress={passwordVisibilityHandler} name={() =><Entypo name={eyeIcon} size={24} color="black" /> }  />}
             label="Password" onChangeText={passwordChangeHandler} />
-          <TouchableOpacity style={styles.btn} >
-            <Text style={styles.btnTxt}>Login</Text>
+            <Text style={styles.errorText}>{error}</Text>
+          <TouchableOpacity style={styles.btn} onPress={loginHandler} >
+            {loading? <ActivityIndicator size="large" color="white" /> : <Text style={styles.btnTxt}>Login</Text>}
           </TouchableOpacity>
           <View style={styles.endView}>
             <Text style={styles.endTxt}>Create an account?</Text>
@@ -81,6 +124,13 @@ const styles = StyleSheet.create({
         color: 'white',
         position: 'absolute',
         marginTop: '20%',
+      },
+      errorText: {
+        marginTop: 10,
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: 'red',
+        textAlign: 'center'
       },
       subTxt: {
         color: 'black',

@@ -1,12 +1,32 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { Provider } from 'react-redux';
+import MainNavigator from './navigator/MainNavigator';
 
-import HomeNavigator from './navigator/HomeNavigator';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { createLogger } from 'redux-logger'
+import thunk from 'redux-thunk'
+import { createPromise } from 'redux-promise-middleware'
+
+import authReducer from './store/reducers/auth'
+import basicReducer from './store/reducers/Basic'
+import skillReducer from './store/reducers/skills'
+
+const rootReducer = combineReducers({
+  auth: authReducer,
+  basic: basicReducer,
+  skill: skillReducer
+});
+
+const store = createStore(rootReducer,applyMiddleware(createPromise(), thunk, createLogger()));
+
 
 export default function App() {
   return (
-    <HomeNavigator />
+    <Provider store={store}>
+      <MainNavigator />
+    </Provider>
   );
 }
 

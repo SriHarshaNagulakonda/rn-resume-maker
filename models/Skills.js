@@ -1,10 +1,9 @@
 class Skill {
-    constructor(id, ownerId, name, percentage) {
+    constructor(id, name, value) {
       this.id = id;
-      this.ownerId = ownerId;
       this.name = name;
-      this.percentage = percentage
+      this.value = value
     }
   }
   
-  export default Skill;
+export default Skill;

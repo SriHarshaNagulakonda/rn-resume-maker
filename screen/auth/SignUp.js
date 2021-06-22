@@ -1,9 +1,10 @@
 import React, {useState} from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native'
-import { TextInput } from 'react-native-paper'
-import { FontAwesome } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
-import { Entypo } from '@expo/vector-icons';
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView,ActivityIndicator } from 'react-native'
+import { TextInput, Snackbar } from 'react-native-paper'
+import { FontAwesome, Ionicons, Entypo } from '@expo/vector-icons';
+import * as authAction from '../../store/actions/auth'
+import { useSelector, useDispatch } from 'react-redux';
+
 
 const Signup = (props) => {
     const [name,setName] = useState("")
@@ -12,6 +13,10 @@ const Signup = (props) => {
     const [confirmPassword, setConfirmPassword] = useState("")
     const [eyeIcon, setEyeIcon] = useState("eye-with-line")
     const [passwordVisibility, setPasswordVisibility] = useState(true);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("")
+    const [snackBarVisible,setSnackBarVisible] = useState(false);
+    
 
     const nameChangeHandler = (name) => {
         setName(name);
@@ -31,6 +36,44 @@ const Signup = (props) => {
     const passwordVisibilityHandler = () => {
       eyeIcon=="eye"?setEyeIcon("eye-with-line"):setEyeIcon("eye")
       setPasswordVisibility(!passwordVisibility);
+    }
+
+    const onDismissSnackBar = () => setSnackBarVisible(false);
+
+
+    const dispatch = useDispatch();
+    const signUpHandler = async () => {
+        setError("");
+        setEmail(email.trim().toLocaleLowerCase());
+        if(name.trim().length==0){
+            setError("Name cant be empty");
+            return;
+        }
+        if(password.length<4){
+            setError("Password > 4 characters");
+            return;
+        }
+        if(password!=confirmPassword){
+            setError("Password's did not match");
+            return;
+        }
+        setLoading(true);
+        try{
+            const signup = await dispatch(authAction.signup(
+                name, email, password
+            ))
+            setSnackBarVisible(true);
+            setName("");
+            setEmail("");
+            setPassword("");
+            setConfirmPassword("");
+            setTimeout(() => props.navigation.navigate('Login'),2000);
+        }
+        catch(err){
+            console.log(err);
+            setError(err.message);
+        }
+        setLoading(false);
     }
     
     return (
@@ -61,19 +104,33 @@ const Signup = (props) => {
                 left={<TextInput.Icon style={styles.inputIcon} name={() =><Ionicons name="md-lock-closed" size={28} color="black" /> }  />}
                 // right={<TextInput.Icon style={styles.inputIcon} onPress={passwordVisibilityHandler} name={() =><Entypo name={eyeIcon} size={24} color="black" /> }  />}
                 label="Confirm Password" onChangeText={confirmPasswordChangeHandler} />
-            <TouchableOpacity style={styles.btn} >
-                <Text style={styles.btnTxt}>SignUp</Text>
+            <Text style={styles.errorText}>{error}</Text>
+            <TouchableOpacity style={styles.btn} onPress={signUpHandler} >
+                {loading? <ActivityIndicator size="large" color="white" /> : <Text style={styles.btnTxt}>SignUp</Text>}
             </TouchableOpacity>
+            
+            {/* end view */}
             <View style={styles.endView}>
                 <Text style={styles.endTxt}>Already Have an Account?</Text>
                 <TouchableOpacity
-                style={styles.endBtn}
-                onPress={() => props.navigation.goBack()}>
+                    style={styles.endBtn}
+                    onPress={() => props.navigation.goBack()}>
                 <Text style={styles.loginTxt}>Login</Text>
                 </TouchableOpacity>
             </View>
             </View>
         </ScrollView>
+        <Snackbar
+            visible={snackBarVisible}
+            onDismiss={onDismissSnackBar}
+            action={{
+                label: 'LOGIN',
+                onPress: () => {
+                   props.navigation.navigate('Login');
+                },
+            }}>
+            Account Created
+        </Snackbar>
       </View>
     )
 }
@@ -99,6 +156,13 @@ const styles = StyleSheet.create({
         color: 'white',
         position: 'absolute',
         marginTop: '20%',
+      },
+      errorText: {
+        marginTop: 10,
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: 'red',
+        textAlign: 'center'
       },
       subTxt: {
         color: 'black',
