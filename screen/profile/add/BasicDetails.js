@@ -25,6 +25,7 @@ const BasicDetails = (props) => {
             const basic = await dispatch(basicActions.createBasic(
                 name, email, phone, careerObjective
             ))
+            props.navigation.navigate('Basic')
         }
         catch(err){
             console.log(err)

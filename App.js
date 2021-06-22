@@ -12,11 +12,13 @@ import { createPromise } from 'redux-promise-middleware'
 import authReducer from './store/reducers/auth'
 import basicReducer from './store/reducers/Basic'
 import skillReducer from './store/reducers/skills'
+import achievementReducer from './store/reducers/achievements'
 
 const rootReducer = combineReducers({
   auth: authReducer,
   basic: basicReducer,
-  skill: skillReducer
+  skill: skillReducer,
+  achievement: achievementReducer
 });
 
 const store = createStore(rootReducer,applyMiddleware(createPromise(), thunk, createLogger()));

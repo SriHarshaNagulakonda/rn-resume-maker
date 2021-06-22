@@ -14,59 +14,61 @@ import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesome, Ionicons, Entypo, Foundation,FontAwesome5 } from '@expo/vector-icons';
 
 import HeaderButton from '../../../components/HeaderButton';
-import * as skillsActions from '../../../store/actions/skills';
+import * as achievementsActions from '../../../store/actions/achievements';
 
 import { TextInput, Snackbar } from 'react-native-paper'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 
-const EditSkillScreen = props => {
+
+const EditAchievementScreen = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [name, setName] = useState("");
-  const [value, setValue] = useState("");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
  
-  const skillId = props.navigation.getParam('skillId');
+  const achievementId = props.navigation.getParam('achievementId');
 
 
-  const editedSkill = useSelector(state =>
-    state.skill.availableSkills.find(skill => skill.id === skillId)
+  const editedAchievement = useSelector(state =>
+    state.achievement.availableAchievements.find(achievement => achievement.id === achievementId)
   );
 
   useEffect(() => {
-    if(skillId){
-      setName(editedSkill.name)
-      setValue(editedSkill.value);
+    if(achievementId){
+      setTitle(editedAchievement.title)
+      setDescription(editedAchievement.description);
     }
-  },[skillId])
+  },[achievementId])
   
 
   const dispatch = useDispatch();
 
   const submitHandler = useCallback(async () => {
-    if(name.trim().length === 0){
-      setError('Name is required')
+    if(title.trim().length === 0){
+      setError('Title is required')
       return;
     }
-    if(value>100||value<0||value.length==0){
-      setError("Percentage invalid")
+    if(title.trim().length === 0){
+      setError("Description is required")
       return;
     }
     setError(null);
     setIsLoading(true);
     try {
-      if (editedSkill) {
+      if (editedAchievement) {
         await dispatch(
-          skillsActions.updateSkill(
-            skillId,
-            name,
-            value,
+          achievementsActions.updateAchievement(
+            achievementId,
+            title,
+            description,
           )
         );
       } else {
         await dispatch(
-          skillsActions.createSkill(
-            name,
-            value
+          achievementsActions.createAchievement(
+            title,
+            description
           )
         );
       }
@@ -77,7 +79,7 @@ const EditSkillScreen = props => {
 
     setIsLoading(false);
     
-  }, [dispatch, skillId,name,value]);
+  }, [dispatch, achievementId,title,description]);
 
   useEffect(() => {
     props.navigation.setParams({ submit: submitHandler });
@@ -102,16 +104,17 @@ const EditSkillScreen = props => {
         <View style={styles.form}>
         <TextInput style={styles.nameInput}
                     mode="flat"
-                    left={<TextInput.Icon style={styles.inputIcon} name={() =><FontAwesome5 name="laptop-code" size={24} color="black" />}  />}
-                    label="Name" value={name}
-                    onChangeText={(name) => setName(name)} />
-                <TextInput style={styles.nameInput}
+                    left={<TextInput.Icon style={styles.inputIcon} name={() =><Entypo name="trophy" size={24} color="black" />}  />}
+                    label="Title" value={title}
+                    onChangeText={(title) => setTitle(title)} />
+                <TextInput style={styles.textArea}
                     mode="flat"
-                    left={<TextInput.Icon style={styles.inputIcon} name={() => <MaterialCommunityIcons name="percent-outline" size={24} color="black" />}  />}
-                    label="Percentage"
-                    keyboardType="numeric"
-                    max="2" value={value}
-                    onChangeText={(value) => setValue(value)} />
+                    left={<TextInput.Icon style={styles.inputIcon} name={() => <MaterialIcons name="description" size={24} color="black" />}  />}
+                    label="Description"
+                    numberOfLines={4}
+                    multiline
+                    value={description}
+                    onChangeText={(description) => setDescription(description)} />
                  <Text style={styles.errorText}>{error}</Text>
         </View>
       </ScrollView>
@@ -119,12 +122,12 @@ const EditSkillScreen = props => {
   );
 };
 
-EditSkillScreen.navigationOptions = navData => {
+EditAchievementScreen.navigationOptions = navData => {
   const submitFn = navData.navigation.getParam('submit');
   return {
-    headerTitle: navData.navigation.getParam('skillId')
-      ? 'Edit Skill'
-      : 'Add Skill',
+    headerTitle: navData.navigation.getParam('achievementId')
+      ? 'Edit Achievement'
+      : 'Add Achievement',
     headerRight: (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
         <Item
@@ -167,6 +170,16 @@ const styles = StyleSheet.create({
     color: 'red',
     textAlign: 'center'
   },
+  textArea: {
+    height: 100,
+    width: '85%',
+    marginLeft: 40,
+    borderBottomWidth: 1,
+    marginTop:  30,
+    borderColor:'blue',
+    paddingBottom:10
+  },
+
 });
 
-export default EditSkillScreen;
+export default EditAchievementScreen;

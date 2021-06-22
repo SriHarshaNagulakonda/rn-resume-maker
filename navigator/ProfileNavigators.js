@@ -14,6 +14,7 @@ import AchievementsScreen from '../screen/profile/Achievements'
 
 import BasicDetailsScreen from '../screen/profile/add/BasicDetails';
 import EditSkillScreen from '../screen/profile/add/EditSkill';
+import EditAchievementScreen from '../screen/profile/add/EditAchievement';
 
 const defaultNavOptions = {
     headerStyle: {
@@ -81,7 +82,8 @@ export const ProjectsNavigator = createStackNavigator({
 )
 
 export const AchievementsNavigator = createStackNavigator({
-        Achievements: AchievementsScreen
+        Achievements: AchievementsScreen,
+        EditAchievement: EditAchievementScreen
     },
     {
         navigationOptions: {
