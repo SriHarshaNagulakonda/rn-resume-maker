@@ -15,6 +15,8 @@ import AchievementsScreen from '../screen/profile/Achievements'
 import BasicDetailsScreen from '../screen/profile/add/BasicDetails';
 import EditSkillScreen from '../screen/profile/add/EditSkill';
 import EditAchievementScreen from '../screen/profile/add/EditAchievement';
+import EditEducationScreen from '../screen/profile/add/EditEducation'
+
 
 const defaultNavOptions = {
     headerStyle: {
@@ -42,7 +44,8 @@ export const BasicNavigator = createStackNavigator({
 )
 
 export const EducationNavigator = createStackNavigator({
-    Education: EducationScreen
+    Education: EducationScreen,
+    EditEducation: EditEducationScreen
 },
 {
     navigationOptions: {
