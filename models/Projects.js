@@ -1,10 +1,10 @@
 class Project {
-    constructor(id, name, description, start_date, end_date, live_url, code_url) {
+    constructor(id, name, description, live_url, code_url, start, end) {
       this.id = id;
       this.name = name;
       this.description = description;
-      this.start_date = start_date;
-      this.end_date = end_date;
+      this.start = start;
+      this.end = end;
       this.live_url = live_url
       this.code_url = code_url
     }

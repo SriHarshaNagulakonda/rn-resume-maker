@@ -14,13 +14,15 @@ import basicReducer from './store/reducers/Basic'
 import skillReducer from './store/reducers/skills'
 import achievementReducer from './store/reducers/achievements'
 import educationReducer from './store/reducers/educations'
+import projectReducer from './store/reducers/projects'
 
 const rootReducer = combineReducers({
   auth: authReducer,
   basic: basicReducer,
   skill: skillReducer,
   achievement: achievementReducer,
-  education: educationReducer
+  education: educationReducer,
+  project: projectReducer
 });
 
 const store = createStore(rootReducer,applyMiddleware(createPromise(), thunk, createLogger()));
