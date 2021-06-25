@@ -9,6 +9,7 @@ import { Platform, SafeAreaView, Button, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import LoginScreen from '../screen/auth/Login'
 import SignUpScreen from '../screen/auth/SignUp'
+import PDFScreen from '../components/PdfViewer'
 import { BasicNavigator, EducationNavigator, SkillsNavigator, ProjectsNavigator, AchievementsNavigator } from './ProfileNavigators'
 import { DrawerItems } from 'react-navigation-drawer';
 
@@ -28,7 +29,8 @@ const LoginNavigator = createStackNavigator(
 );
 
 const ResumeNavigator = createStackNavigator({
-    Templates: TemplatesScreen
+    Templates: TemplatesScreen,
+    PDFViewer: PDFScreen,  
 })
 
 

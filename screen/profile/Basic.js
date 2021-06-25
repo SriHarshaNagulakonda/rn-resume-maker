@@ -18,7 +18,7 @@ const Basic = () => {
   }, [dispatch]);
 
   const basicData = useSelector(state => state.basic.basicDetails)
-  console.log(basicData,'basic data selector')
+  // console.log(basicData,'basic data selector')
 
   if(!basicData){
     return(
